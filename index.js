@@ -25,14 +25,24 @@ const client = new Discord.Client({
 });
 
 // Text channel answers
-const answers = ["Yes?", "No.", "Ho ho ho!", "Eugh!"];
+const answers = ["Yes?", "No.", "Ho ho ho!", "Ew!"];
 
 // Voice channel file names
-const files = ["yes", "no", "hohoho", "eugh", "benleft"];
+const files = ["yes", "no", "hohoho", "ew", "benleft"];
 
+// Admin IDs
+// TODO: Admin Commands (maybe replace with role)
+const admins = ["445928169350889472", "338075554937044994"];
+
+// Play sound
 function playSound(formattedMessage, player) {
   const resource = createAudioResource(`./sounds/${formattedMessage}.mp3`);
   player.play(resource);
+}
+
+// Wait a few miliseconds
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Get random int function
@@ -71,12 +81,12 @@ client.on("ready", () => {
   playSound("ben", player);
   client.channels.cache
     .get("948284580190879754")
-    .send("Ben. :telephone_receiver:");
+    .send(":telephone_receiver: Ben.");
 
   // Log in console that bot has started
   console.log(`Logged in as ${client.user.tag}`);
 });
-client.on("messageCreate", (message) => {
+client.on("messageCreate", async (message) => {
   // Ignore invalid input
   if (message.author.bot || message.channel.id != benChannelId) return;
 
@@ -85,27 +95,29 @@ client.on("messageCreate", (message) => {
 
   // Listen for "ben"
   if (formattedMessage.startsWith(`ben`) || formattedMessage.endsWith(`ben`)) {
-
-    
+    // Generate random number from 0-4
     number = getRandomInt(5);
+
+    // If number is not 4 reply normally with sound
     if (number != 4 && benLeft == false) {
       playSound(files[number], player);
       message.reply(answers[number]);
+
+      // If it is 4 play the exit sound, send message and leave
     } else if (number == 4 && benLeft == false) {
       benLeft = true;
+      playSound("benleft", player);
       message.reply(":telephone: *hangs up*");
+      await sleep(2200)
       connection.destroy();
-    }
-    else if (benLeft) {
+
+      // If ben left, join and say Ben.
+    } else if (benLeft) {
       createPlayer(connection, player);
       playSound("ben", player);
       message.reply(":telephone_receiver: Ben.");
       benLeft = false;
     }
-
-    
-
-    // Get random number from 0-4
   }
 
   // Say in VC
@@ -116,20 +128,15 @@ client.on("messageCreate", (message) => {
     formattedMessage = formattedMessage.slice(4);
     switch (formattedMessage) {
       case "yes":
-        playSound("yes", player);
-        break;
       case "no":
-        playSound("no", player);
-        break;
       case "hohoho":
-        playSound("hohoho", player);
-        break;
-      case "eugh":
-        playSound("eugh", player);
+      case "ew":
+        playSound(formattedMessage, player);
+        message.reply(`Saying \`${formattedMessage}\` in VC!`);
         break;
       default:
         message.reply(
-          "This isn't a sound! The only sounds are: `yes`, `no`, `hohoho` and `eugh`!"
+          "This isn't a sound! The only sounds are: `yes`, `no`, `hohoho` and `ew`!"
         );
         break;
     }
