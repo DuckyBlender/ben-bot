@@ -57,7 +57,7 @@ client.on("ready", () => {
   subscription = connection.subscribe(player);
 
   // Play ben in VC and send message in channel
-  const resource = createAudioResource("./ben.mp3");
+  const resource = createAudioResource("./sounds/ben.mp3");
   player.play(resource);
   client.channels.cache.get("948284580190879754").send("Ben. :telephone:");
 
@@ -78,7 +78,7 @@ client.on("messageCreate", (message) => {
     number = getRandomInt(3);
     // Load file
     const resource = createAudioResource(
-      `./${files[number]}.mp3`
+      `./sounds/${files[number]}.mp3`
     );
     // Play file and send message
     player.play(resource);
