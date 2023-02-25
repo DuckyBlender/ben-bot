@@ -25,10 +25,10 @@ const client = new Discord.Client({
 });
 
 // Text channel answers
-const answers = ["Yes?", "No.", "Ho ho ho!", "Ew!"];
+const answers = ["Yes?", "No.", "Ho ho ho!", "Eugh!"];
 
 // Voice channel file names
-const files = ["yes", "no", "hohoho", "ew", "benleft"];
+const files = ["yes", "no", "hohoho", "eugh", "benleft"];
 
 // Admin IDs
 // TODO: Admin Commands (maybe replace with role)
@@ -108,7 +108,7 @@ client.on("messageCreate", async (message) => {
       benLeft = true;
       playSound("benleft", player);
       message.reply(":telephone: *hangs up*");
-      await sleep(2200)
+      await sleep(2200);
       connection.destroy();
 
       // If ben left, join and say Ben.
@@ -130,13 +130,13 @@ client.on("messageCreate", async (message) => {
       case "yes":
       case "no":
       case "hohoho":
-      case "ew":
+      case "eugh":
         playSound(formattedMessage, player);
         message.reply(`Saying \`${formattedMessage}\` in VC!`);
         break;
       default:
         message.reply(
-          "This isn't a sound! The only sounds are: `yes`, `no`, `hohoho` and `ew`!"
+          "This isn't a sound! The only sounds are: `yes`, `no`, `hohoho` and `eugh`!"
         );
         break;
     }
